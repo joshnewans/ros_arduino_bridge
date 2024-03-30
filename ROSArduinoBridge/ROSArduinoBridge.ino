@@ -60,7 +60,10 @@
    //#define ROBOGAIA
    
    /* Encoders directly attached to Arduino board */
-   #define ARDUINO_ENC_COUNTER
+   //#define ARDUINO_ENC_COUNTER
+
+   /* Transmissive Optical Sensor with Phototransistor Output with external pull down resistor*/
+   #define TOSPO_ENCODER
 
    /* L298 Motor driver*/
    #define L298_MOTOR_DRIVER
@@ -119,6 +122,12 @@
 #endif
 
 /* Variable initialization */
+#ifdef TOSPO_ENCODER
+  #include "Globals.h"
+  // Initialize global variables with a default direction
+  MotorDirection leftMotorDirection = STOPPED; 
+  MotorDirection rightMotorDirection = STOPPED;
+#endif
 
 // A pair of varibles to help parse serial commands (thanks Fergs)
 int arg = 0;
@@ -269,6 +278,17 @@ void setup() {
     // tell pin change mask to listen to right encoder pins
     PCMSK1 |= (1 << RIGHT_ENC_PIN_A)|(1 << RIGHT_ENC_PIN_B);
     
+    // enable PCINT1 and PCINT2 interrupt in the general interrupt mask
+    PCICR |= (1 << PCIE1) | (1 << PCIE2);
+  #elif defined(TOSPO_ENCODER)
+    //set as inputs
+    DDRD &= ~(1<<LEFT_ENC_PIN_A);
+    DDRC &= ~(1<<RIGHT_ENC_PIN_A);
+    // no pull up because of external pull down
+    // tell pin change mask to listen to left encoder pin
+    PCMSK2 |= (1 << LEFT_ENC_PIN_A);
+    // tell pin change mask to listen to right encoder pin
+    PCMSK1 |= (1 << RIGHT_ENC_PIN_A);
     // enable PCINT1 and PCINT2 interrupt in the general interrupt mask
     PCICR |= (1 << PCIE1) | (1 << PCIE2);
   #endif

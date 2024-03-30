@@ -72,13 +72,15 @@
     if (spd > 255)
       spd = 255;
     
-    if (i == LEFT) { 
-      if      (reverse == 0) { analogWrite(LEFT_MOTOR_FORWARD, spd); analogWrite(LEFT_MOTOR_BACKWARD, 0); }
-      else if (reverse == 1) { analogWrite(LEFT_MOTOR_BACKWARD, spd); analogWrite(LEFT_MOTOR_FORWARD, 0); }
+    if (i == LEFT) {
+      if      (reverse == 0 && spd > 0) { analogWrite(LEFT_MOTOR_FORWARD, spd); analogWrite(LEFT_MOTOR_BACKWARD, 0); leftMotorDirection = FORWARD;}
+      else if (reverse == 1) { analogWrite(LEFT_MOTOR_BACKWARD, spd); analogWrite(LEFT_MOTOR_FORWARD, 0); leftMotorDirection = BACKWARD;}
+      else { analogWrite(LEFT_MOTOR_FORWARD, 0); analogWrite(LEFT_MOTOR_BACKWARD, 0); leftMotorDirection = STOPPED; }
     }
     else /*if (i == RIGHT) //no need for condition*/ {
-      if      (reverse == 0) { analogWrite(RIGHT_MOTOR_FORWARD, spd); analogWrite(RIGHT_MOTOR_BACKWARD, 0); }
-      else if (reverse == 1) { analogWrite(RIGHT_MOTOR_BACKWARD, spd); analogWrite(RIGHT_MOTOR_FORWARD, 0); }
+      if      (reverse == 0 && spd > 0) { analogWrite(RIGHT_MOTOR_FORWARD, spd); analogWrite(RIGHT_MOTOR_BACKWARD, 0); rightMotorDirection = FORWARD;}
+      else if (reverse == 1) { analogWrite(RIGHT_MOTOR_BACKWARD, spd); analogWrite(RIGHT_MOTOR_FORWARD, 0); rightMotorDirection = BACKWARD;}
+      else { analogWrite(RIGHT_MOTOR_BACKWARD, 0); analogWrite(RIGHT_MOTOR_FORWARD, 0); rightMotorDirection = STOPPED; }
     }
   }
   
